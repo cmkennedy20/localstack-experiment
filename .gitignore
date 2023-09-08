@@ -1,0 +1,4 @@
+.terraform*
+localstack_providers*
+terraform.tfstate
+volume

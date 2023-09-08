@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   localstack:
-    container_name: "localstack"
+    container_name: localstack
     image: localstack/localstack
     ports:
       - "127.0.0.1:4566:4566"            # LocalStack Gateway
@@ -13,11 +13,24 @@ services:
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - local-network
   terraform:
     container_name: terraform
     build: 
       context: ../../
       dockerfile: tools/docker/terraform.Dockerfile
-    volume:
-      ../../build/terraform:/opt/tf_home/
+    environment:
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_PRIVATE_KEY_ID=test
+      - AWS_DEFAULT_REGION=us-east-1
+      - LOCALSTACK_HOSTNAME=localstack
+    volumes:
+      - "../../src/:/opt/tf_home/"
+    networks:
+      - local-network
     entrypoint:  ["sh", "-c", "while true; do echo Looping; sleep 100; done"]
+
+networks:
+  local-network:
+    driver: bridge
