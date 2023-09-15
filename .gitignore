@@ -2,3 +2,5 @@
 localstack_providers*
 terraform.tfstate
 volume
+*.zip
+terraform.tfstate*
