@@ -1,7 +1,7 @@
 resource "aws_lambda_function" "my_lambda_function" {
   function_name    = "localstack-lambda-function"
   runtime          = "python3.9"
-  handler          = "lambda_handler"
+  handler          = "lambda.lambda_handler"
   role             = aws_iam_role.my_lambda_role.arn
   filename         = data.archive_file.lambda_function_file.output_path
   source_code_hash = data.archive_file.lambda_function_file.output_base64sha256
@@ -15,9 +15,8 @@ resource "aws_lambda_function_url" "lambda_endpoint" {
 
 data "archive_file" "lambda_function_file" {
   type             = "zip"
-  output_file_mode = "0666"
-  source_file      = "../code/lambda.py"
-  output_path      = "lambda.zip"
+  output_path = "lambda.zip"
+  source_content_filename = "lambda.zip"
 }
 
 resource "aws_iam_role" "my_lambda_role" {
